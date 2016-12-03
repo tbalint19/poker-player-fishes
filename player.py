@@ -57,11 +57,11 @@ gamestate = {
             "hole_cards": [                         # The cards of the player. This is only visible for your own player
                                                     #     except after showdown, when cards revealed are also included.
                 {
-                    "rank": "6",                    # Rank of the card. Possible values are numbers 2-10 and J,Q,K,A
-                    "suit": "spades"                # Suit of the card. Possible values are: clubs,spades,hearts,diamonds
+                    "rank": "K",                    # Rank of the card. Possible values are numbers 2-10 and J,Q,K,A
+                    "suit": "hearts"                # Suit of the card. Possible values are: clubs,spades,hearts,diamonds
                 },
                 {
-                    "rank": "K",
+                    "rank": "A",
                     "suit": "hearts"
                 }
             ]
@@ -94,12 +94,15 @@ gamestate = {
 
 class Player:
     VERSION = "bela"
+    top_1 = ['AAo', 'KKo', 'AKo', 'AKs', 'QQo', 'JJo', '1010o', 'AQs', 'AQo']
 
+    # Finds player data
     def find_player(self, game_state):
         for player in game_state["players"]:
             if player["name"] == "Fishes":
                 self.player_data = player
 
+    # Formats our cards into a desired format, example: 'AKs' - meaning ace, king, offsuite (not the same color)
     def format_own_cards(self):
         suits = []
         suit = 'o'
@@ -111,12 +114,20 @@ class Player:
             suit = 's'
         self.own_cards = "".join(cards) + suit
 
+    # Checks if our cards are in top5%
+    def check_top1(self):
+        altered_cards = self.own_cards[1] + self.own_cards[0] + self.own_cards[2]
+        return self.own_cards in self.top_1 or altered_cards in self.top_1
+
 
 
     def betRequest(self, game_state):
-        self.find_player(game_state)
-        self.format_own_cards()
-        print(self.own_cards)
+        # self.find_player(game_state)
+        # self.format_own_cards()
+        #
+        # print(self.check_top1())
+
+
 
         if self.player_data["hole_cards"][0]["rank"] == self.player_data["hole_cards"][1]["rank"]:
             return_value = 10000
