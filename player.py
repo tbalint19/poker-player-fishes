@@ -138,14 +138,22 @@ class Board:
 
         return False
 
+    def check_top_pair(self, game_state, player_data):
+        community_cards = [i['rank'] if i['rank'] != "10" else "T" for i in game_state['community_cards']]
+        own_cards = [i['rank'] if i['rank'] != "10" else "T" for i in player_data['hole_cards']]
 
-    def get_hand_rank(self):
+
+
+
+    def get_hand_rank(self, gamestate, player_data):
         if self.check_poker():
             return "Poker"
         if self.check_set():
             return "Set"
         if self.check_two_pairs():
             return "Two pairs"
+        if self.check_top_pair(gamestate, player_data):
+            return "Top pair"
         if self.check_one_pair():
             return 'One pair'
 
@@ -159,7 +167,6 @@ class Board:
         for card in own_cards:
             cards.append(card)
         self.cards = cards
-        print(self.cards)
 
     def update_status(self, game_state):
         if(len(game_state['community_cards']) == 0):
@@ -208,16 +215,16 @@ class Board:
 
 class Player:
     VERSION = "bela"
-    top_1 = ['AAo', 'KKo', 'AKo', 'AKs', 'QQo', 'JJo', 'TTo', 'AQs', 'AQo', 'KQs', 'ATs', '99o', '88o', '77o']
+    top_1 = ['AAo', 'KKo', 'AKo', 'AKs', 'QQo', 'JJo', 'TTo', 'AQs', 'AJs', 'AQo', 'KQs', 'ATs', '99o', '88o', '77o']
     top_2 = [
         'AAo', 'KKo', 'AKo', 'AKs', 'QQo', 'JJo', 'TTo', 'AQs', 'AQo', 'AJo', 'KQo', 'KQs', 'KJs', 'QJs',
-        'ATs', '99o', '88o', '77o'
+        'ATs', '99o', '88o', '77o', 'AJs'
     ]
     top_3 = [
         'AAo', 'KKo', 'AKo', 'AKs', 'QQo', 'JJo', 'TTo', 'AQs', 'AQo', 'AJo', 'KQo', 'KQs', 'KJs', 'QJs', 'ATs',
         '99o', '88o', '77o', '66o', '55o', '44o', '33o', '22o', 'A9s', 'A8s', 'A7s', 'A6s', 'A5s', 'A4s', 'A3s',
         'A2s', 'KTs', 'K9s', 'K8s', 'K7s', 'K6s', 'QTs', 'Q9s', 'Q8s', 'JTs', 'J9s', 'T9s', 'ATo', 'A9o', 'A8o',
-        'KJo', 'KTo', 'K9o', 'QJo', 'QTo', 'JTo'
+        'KJo', 'KTo', 'K9o', 'QJo', 'QTo', 'JTo', 'AJs'
     ]
 
     def __init__(self):
@@ -286,8 +293,7 @@ class Player:
         self.board.update_action(game_state)
         self.board.update_cards(game_state, self.player_data)
         print("hand_rank")
-        hand_rank = self.board.get_hand_rank()
-        print(hand_rank)
+        hand_rank = self.board.get_hand_rank(game_state, self.player_data)
 
         if self.board.status == 'preflop':
             if self.check_top1():
@@ -326,7 +332,7 @@ class Player:
                     return self.reraise()
                 if self.board.action == 'raise':
                     return self.all_in()
-            elif hand_rank == "Two pairs":
+            elif hand_rank == "Two pairs" or hand_rank == "Top pair":
                 if self.board.action == 'no_bet':
                     return self.bet()
                 if self.board.action == 'bet':
