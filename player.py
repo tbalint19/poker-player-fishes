@@ -7,10 +7,10 @@ class Player:
         try:
 
             fishes = self.get_my_hand()
-            # pairs_in_hand = self.check_hand_for_pairs(fishes["hole_cards"])
-            both_figures = self.check_hand_for_figures(fishes["hole_cards"])
+            pairs_in_hand = self.check_hand_for_pairs(fishes["hole_cards"])
+            # both_figures = self.check_hand_for_figures(fishes["hole_cards"])
 
-            if pairs_in_hand or both_figures:
+            if pairs_in_hand:
                 return 10000
             else:
                 return 0
