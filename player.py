@@ -13,10 +13,17 @@ class Player:
             if pairs_in_hand or both_figures:
                 return 10000
             else:
-                return 0
+                return 50
 
         except:
-            return 10000
+            fishes = self.get_my_hand(game_state)
+            pairs_in_hand = self.check_hand_for_pairs(fishes["hole_cards"])
+            both_figures = self.check_hand_for_figures(fishes["hole_cards"])
+
+            if pairs_in_hand or both_figures:
+                return 10000
+            else:
+                return 0
 
     def showdown(self, game_state):
         pass
