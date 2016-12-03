@@ -58,11 +58,11 @@ gamestate = {
                                                     #     except after showdown, when cards revealed are also included.
                 {
                     "rank": "6",                    # Rank of the card. Possible values are numbers 2-10 and J,Q,K,A
-                    "suit": "hearts"                # Suit of the card. Possible values are: clubs,spades,hearts,diamonds
+                    "suit": "spades"                # Suit of the card. Possible values are: clubs,spades,hearts,diamonds
                 },
                 {
                     "rank": "K",
-                    "suit": "spades"
+                    "suit": "hearts"
                 }
             ]
         },
@@ -100,9 +100,23 @@ class Player:
             if player["name"] == "Fishes":
                 self.player_data = player
 
+    def format_own_cards(self):
+        suits = []
+        suit = 'o'
+        cards = []
+        for card in self.player_data['hole_cards']:
+            suits.append(card['suit'])
+            cards.append(card['rank'])
+        if suits[0] == suits[1]:
+            suit = 's'
+        self.own_cards = "".join(cards) + suit
+
+
 
     def betRequest(self, game_state):
         self.find_player(game_state)
+        self.format_own_cards()
+        print(self.own_cards)
 
         if self.player_data["hole_cards"][0]["rank"] == self.player_data["hole_cards"][1]["rank"]:
             return_value = 10000
