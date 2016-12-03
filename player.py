@@ -28,7 +28,7 @@ class Player:
                 return player
 
     def check_hand_for_pairs(self, cards):
-        return cards[0]["rank"] == cards[0]["rank"]
+        return cards[0]["rank"] == cards[1]["rank"]
 
     def check_hand_for_figures(self, cards):
         first_good = False
