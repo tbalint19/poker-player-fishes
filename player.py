@@ -34,11 +34,11 @@ class Player:
         first_good = False
         second_good = False
         try:
-            first = int(fishes["hole_cards"][0]["rank"])
+            first = int(cards[0]["rank"])
         except:
             first_good = True
         try:
-            second = int(fishes["hole_cards"][0]["rank"])
+            second = int(cards[0]["rank"])
         except:
             second_good = True
         return first_good and second_good
