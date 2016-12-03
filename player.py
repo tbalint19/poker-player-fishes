@@ -338,7 +338,7 @@ class Player:
                     if self.board.action == 'no_bet':
                         return self.bet()
                     if self.board.action == 'bet':
-                        return self.call()
+                        return self.reraise()
                     if self.board.action == 'raise':
                         return self.call()
                 else:
