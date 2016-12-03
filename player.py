@@ -1,97 +1,3 @@
-gamestate = {
-    "tournament_id":"550d1d68cd7bd10003000003",     # Id of the current tournament
-
-    "game_id":"550da1cb2d909006e90004b1",           # Id of the current sit'n'go game. You can use this to link a
-                                                    # sequence of game states together for logging purposes, or to
-                                                    # make sure that the same strategy is played for an entire game
-
-    "round":0,                                      # Index of the current round within a sit'n'go
-
-    "bet_index":0,                                  # Index of the betting opportunity within a round
-
-    "small_blind": 10,                              # The small blind in the current round. The big blind is twice the
-                                                    #     small blind
-
-    "current_buy_in": 80,                          # The amount of the largest current bet from any one player
-
-    "pot": 400,                                     # The size of the pot (sum of the player bets)
-
-    "minimum_raise": 240,                           # Minimum raise amount. To raise you have to return at least:
-                                                    #     current_buy_in - players[in_action][bet] + minimum_raise
-
-    "dealer": 1,                                    # The index of the player on the dealer button in this round
-                                                    #     The first player is (dealer+1)%(players.length)
-
-    "orbits": 7,                                    # Number of orbits completed. (The number of times the dealer
-                                                    #     button returned to the same player.)
-
-    "in_action": 1,                                 # The index of your player, in the players array
-
-    "players": [                                    # An array of the players. The order stays the same during the
-        {                                           #     entire tournament
-
-            "id": 0,                                # Id of the player (same as the index)
-
-            "name": "Albert",                       # Name specified in the tournament config
-
-            "status": "active",                     # Status of the player:
-                                                    #   - active: the player can make bets, and win the current pot
-                                                    #   - folded: the player folded, and gave up interest in
-                                                    #       the current pot. They can return in the next round.
-                                                    #   - out: the player lost all chips, and is out of this sit'n'go
-
-            "version": "Default random player",     # Version identifier returned by the player
-
-            "stack": 1010,                          # Amount of chips still available for the player. (Not including
-                                                    #     the chips the player bet in this round.)
-
-            "bet": 0                              # The amount of chips the player put into the pot
-        },
-        {
-            "id": 1,                                # Your own player looks similar, with one extension.
-            "name": "Fishes",
-            "status": "active",
-            "version": "Default random player",
-            "stack": 1590,
-            "bet": 80,
-            "hole_cards": [                         # The cards of the player. This is only visible for your own player
-                                                    #     except after showdown, when cards revealed are also included.
-                {
-                    "rank": "A",                    # Rank of the card. Possible values are numbers 2-10 and J,Q,K,A
-                    "suit": "hearts"                # Suit of the card. Possible values are: clubs,spades,hearts,diamonds
-                },
-                {
-                    "rank": "A",
-                    "suit": "spades"
-                }
-            ]
-        },
-        {
-            "id": 2,
-            "name": "Chuck",
-            "status": "out",
-            "version": "Default random player",
-            "stack": 0,
-            "bet": 0
-        }
-    ],
-    "community_cards": [                            # Finally the array of community cards.
-        {
-            "rank": "10",
-            "suit": "spades"
-        },
-        {
-            "rank": "10",
-            "suit": "hearts"
-        },
-        {
-            "rank": "10",
-            "suit": "clubs"
-        }
-    ]
-}
-
-
 class Board:
 
     def check_one_pair(self):
@@ -138,22 +44,14 @@ class Board:
 
         return False
 
-    def check_top_pair(self, game_state, player_data):
-        community_cards = [i['rank'] if i['rank'] != "10" else "T" for i in game_state['community_cards']]
-        own_cards = [i['rank'] if i['rank'] != "10" else "T" for i in player_data['hole_cards']]
 
-
-
-
-    def get_hand_rank(self, gamestate, player_data):
+    def get_hand_rank(self):
         if self.check_poker():
             return "Poker"
         if self.check_set():
             return "Set"
         if self.check_two_pairs():
             return "Two pairs"
-        if self.check_top_pair(gamestate, player_data):
-            return "Top pair"
         if self.check_one_pair():
             return 'One pair'
 
@@ -167,6 +65,7 @@ class Board:
         for card in own_cards:
             cards.append(card)
         self.cards = cards
+        print(self.cards)
 
     def update_status(self, game_state):
         if(len(game_state['community_cards']) == 0):
@@ -215,16 +114,16 @@ class Board:
 
 class Player:
     VERSION = "bela"
-    top_1 = ['AAo', 'KKo', 'AKo', 'AKs', 'QQo', 'JJo', 'TTo', 'AQs', 'AJs', 'AQo', 'KQs', 'ATs', '99o', '88o', '77o']
+    top_1 = ['AAo', 'KKo', 'AKo', 'AKs', 'QQo', 'JJo', 'TTo', 'AQs', 'AQo', 'KQs', 'ATs', '99o', '88o', '77o']
     top_2 = [
         'AAo', 'KKo', 'AKo', 'AKs', 'QQo', 'JJo', 'TTo', 'AQs', 'AQo', 'AJo', 'KQo', 'KQs', 'KJs', 'QJs',
-        'ATs', '99o', '88o', '77o', 'AJs'
+        'ATs', '99o', '88o', '77o'
     ]
     top_3 = [
         'AAo', 'KKo', 'AKo', 'AKs', 'QQo', 'JJo', 'TTo', 'AQs', 'AQo', 'AJo', 'KQo', 'KQs', 'KJs', 'QJs', 'ATs',
         '99o', '88o', '77o', '66o', '55o', '44o', '33o', '22o', 'A9s', 'A8s', 'A7s', 'A6s', 'A5s', 'A4s', 'A3s',
         'A2s', 'KTs', 'K9s', 'K8s', 'K7s', 'K6s', 'QTs', 'Q9s', 'Q8s', 'JTs', 'J9s', 'T9s', 'ATo', 'A9o', 'A8o',
-        'KJo', 'KTo', 'K9o', 'QJo', 'QTo', 'JTo', 'AJs'
+        'KJo', 'KTo', 'K9o', 'QJo', 'QTo', 'JTo'
     ]
 
     def __init__(self):
@@ -293,7 +192,8 @@ class Player:
         self.board.update_action(game_state)
         self.board.update_cards(game_state, self.player_data)
         print("hand_rank")
-        hand_rank = self.board.get_hand_rank(game_state, self.player_data)
+        hand_rank = self.board.get_hand_rank()
+        print(hand_rank)
 
         if self.board.status == 'preflop':
             if self.check_top1():
@@ -332,7 +232,7 @@ class Player:
                     return self.reraise()
                 if self.board.action == 'raise':
                     return self.all_in()
-            elif hand_rank == "Two pairs" or hand_rank == "Top pair":
+            elif hand_rank == "Two pairs":
                 if self.board.action == 'no_bet':
                     return self.bet()
                 if self.board.action == 'bet':
@@ -393,4 +293,3 @@ class Player:
 
 player = Player()
 print(player.betRequest(gamestate))
-
