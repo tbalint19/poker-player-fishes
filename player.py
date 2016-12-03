@@ -120,44 +120,56 @@ class Player:
         return self.own_cards in self.top_1 or altered_cards in self.top_1
 
 
+def betRequest(self, game_state):
+    try:
 
-    def betRequest(self, game_state):
-        # self.find_player(game_state)
-        # self.format_own_cards()
-        #
-        # print(self.check_top1())
+        fishes = self.get_my_hand(game_state)
+        pairs_in_hand = self.check_hand_for_pairs(fishes["hole_cards"])
+        both_figures = self.check_hand_for_figures(fishes["hole_cards"])
 
-
-
-        if self.player_data["hole_cards"][0]["rank"] == self.player_data["hole_cards"][1]["rank"]:
-            return_value = 10000
+        if pairs_in_hand or both_figures:
+            return 10000
         else:
-            first_good = False
-            second_good = False
-            try:
-                first = int(self.player_data["hole_cards"][0]["rank"])
-            except:
-                first_good = True
-            try:
-                second = int(self.player_data["hole_cards"][0]["rank"])
-            except:
-                second_good = True
-            if first_good and second_good:
-                return_value = 10000
+            if int(game_state["current_buy_in"]) > 50:
+                return 0
             else:
-                return_value = 0
+                return 30
 
-        return return_value
+    except:
+        fishes = self.get_my_hand(game_state)
+        pairs_in_hand = self.check_hand_for_pairs(fishes["hole_cards"])
+        both_figures = self.check_hand_for_figures(fishes["hole_cards"])
+
+        if pairs_in_hand or both_figures:
+            return 10000
+        else:
+            return 0
+
 
     def showdown(self, game_state):
         pass
+    
 
-    def checkownhand(self, game_state):
-        for i in gamestate["players"]:
-            if i["name"] == "Bob":
-                print(i["hole_cards"])
-        return 0
+    def get_my_hand(self, game_state):
+        all_data = game_state
+        for player in all_data["players"]:
+            if player["name"] == "Fishes":
+                return player
 
 
-x = Player()
-x.betRequest(gamestate)
+    def check_hand_for_pairs(self, cards):
+        return cards[0]["rank"] == cards[1]["rank"]
+
+
+    def check_hand_for_figures(self, cards):
+        first_good = False
+        second_good = False
+        try:
+            first = int(cards[0]["rank"])
+        except:
+            first_good = True
+        try:
+            second = int(cards[1]["rank"])
+        except:
+            second_good = True
+        return first_good and second_good
