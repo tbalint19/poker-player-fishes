@@ -49,7 +49,7 @@ gamestate = {
         },
         {
             "id": 1,                                # Your own player looks similar, with one extension.
-            "name": "Bob",
+            "name": "Fishes",
             "status": "active",
             "version": "Default random player",
             "stack": 1590,
@@ -95,23 +95,26 @@ gamestate = {
 class Player:
     VERSION = "bela"
 
-    def betRequest(self, game_state):
-        all_data = game_state
-        for player in all_data["players"]:
+    def find_player(self, game_state):
+        for player in game_state["players"]:
             if player["name"] == "Fishes":
-                fishes = player
+                self.player_data = player
 
-        if fishes["hole_cards"][0]["rank"] == fishes["hole_cards"][1]["rank"]:
+
+    def betRequest(self, game_state):
+        self.find_player(game_state)
+
+        if self.player_data["hole_cards"][0]["rank"] == self.player_data["hole_cards"][1]["rank"]:
             return_value = 10000
         else:
             first_good = False
             second_good = False
             try:
-                first = int(fishes["hole_cards"][0]["rank"])
+                first = int(self.player_data["hole_cards"][0]["rank"])
             except:
                 first_good = True
             try:
-                second = int(fishes["hole_cards"][0]["rank"])
+                second = int(self.player_data["hole_cards"][0]["rank"])
             except:
                 second_good = True
             if first_good and second_good:
