@@ -13,7 +13,7 @@ class Player:
             if pairs_in_hand or both_figures:
                 return 10000
             else:
-                return 50
+                return 0
 
         except:
             fishes = self.get_my_hand(game_state)
