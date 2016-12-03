@@ -208,7 +208,7 @@ class Board:
 
 class Player:
     VERSION = "bela"
-    top_1 = ['AAo', 'KKo', 'AKo', 'AKs', 'QQo', 'JJo', 'TTo', 'AQs', 'AQo']
+    top_1 = ['AAo', 'KKo', 'AKo', 'AKs', 'QQo', 'JJo', 'TTo', 'AQs', 'AQo', 'KQs', 'ATs', '99o', '88o', '77o']
     top_2 = [
         'AAo', 'KKo', 'AKo', 'AKs', 'QQo', 'JJo', 'TTo', 'AQs', 'AQo', 'AJo', 'KQo', 'KQs', 'KJs', 'QJs',
         'ATs', '99o', '88o', '77o'
@@ -310,7 +310,7 @@ class Player:
                 if self.board.action == 'no_bet':
                     return self.bet()
                 if self.board.action == 'bet':
-                    return self.fold()
+                    return self.call()
                 if self.board.action == 'raise':
                     return self.fold()
 
@@ -334,12 +334,20 @@ class Player:
                 if self.board.action == 'raise':
                     return self.all_in()
             elif hand_rank == "One pair":
-                if self.board.action == 'no_bet':
-                    return self.bet()
-                if self.board.action == 'bet':
-                    return self.fold()
-                if self.board.action == 'raise':
-                    return self.fold()
+                if self.check_top1():
+                    if self.board.action == 'no_bet':
+                        return self.bet()
+                    if self.board.action == 'bet':
+                        return self.call()
+                    if self.board.action == 'raise':
+                        return self.call()
+                else:
+                    if self.board.action == 'no_bet':
+                        return self.bet()
+                    if self.board.action == 'bet':
+                        return self.fold()
+                    if self.board.action == 'raise':
+                        return self.fold()
             else:
                 if self.board.action == 'no_bet':
                     return self.check()
@@ -347,7 +355,7 @@ class Player:
                     return self.fold()
                 if self.board.action == 'raise':
                     return self.fold()
-            
+
 
     def showdown(self, game_state):
         pass
